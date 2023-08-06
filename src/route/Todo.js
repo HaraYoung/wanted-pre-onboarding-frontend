@@ -44,6 +44,29 @@ const Todo = () => {
     getTodos();
   }, [newTodo]);
 
+  const putTodosIsCompleted = async (isCheck, id, todo) => {
+    try {
+      const response = await axios.put(
+        `${API}/todos/${id}`,
+        {
+          todo:todo,
+          isCompleted: isCheck,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const isCompletedCheckChange = (isCheck, id, todo) => {
+    putTodosIsCompleted(isCheck, id, todo);
+  };
+
   return (
     <div>
       <div>Todo</div>
@@ -51,15 +74,24 @@ const Todo = () => {
         <input data-testid="new-todo-input" onChange={onChangeNewTodo} />
         <button data-testid="new-todo-add-button">추가</button>
       </form>
-      {todos &&
-        todos.map((item) => (
-          <li key={item.id}>
-            <label>
-              <input type="checkbox" />
-              <span>{item.todo}</span>
-            </label>
-          </li>
-        ))}
+      <ul>
+        {todos &&
+          todos.map((item) => (
+            <li key={item.id}>
+              <label>
+                <input
+                  type="checkbox"
+                  onChange={(e) =>
+                    isCompletedCheckChange(e.target.checked, item.id, item.todo)
+                  }
+                />
+                <span>{item.todo}</span>
+              </label>
+              <button data-testid="modify-button">수정</button>
+              <button data-testid="delete-button">삭제</button>
+            </li>
+          ))}
+      </ul>
     </div>
   );
 };
