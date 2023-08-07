@@ -23,6 +23,7 @@ const SignIn = () => {
     if (!hasAtSymbol || passwordInputValue.length < 8) {
       document.getElementById("signin-button").disabled = true;
     } else {
+      console.log(emailInputValue, passwordInputValue);
       try {
         const response = await axios.post(`${API}/auth/signin`, {
           email: emailInputValue,

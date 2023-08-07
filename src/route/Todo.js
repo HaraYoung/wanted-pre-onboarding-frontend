@@ -130,8 +130,9 @@ const Todo = () => {
                   <button
                     data-testid="submit-button"
                     onClick={() => {
-                      if (editInputValue === "") editInputValue = item.todo;
-                      onChangeTodoEdit(isCompleted, item.id, editInputValue);
+                      if (editInputValue === "") onClickEdit(index);
+                      else
+                        onChangeTodoEdit(isCompleted, item.id, editInputValue);
                     }}
                   >
                     제출
