@@ -42,39 +42,43 @@ const ButtonItem = styled.button`
   }
 `;
 const Signup = () => {
+  const API = "https://www.pre-onboarding-selection-task.shop"; //기본 API URL
   const navigate = useNavigate();
-  const signinMatch = useMatch("signup");
+  const signupMatch = useMatch("signup");
+  //화면이 처음 마운트될 때 JWT 토큰 확인
   useEffect(() => {
+    //access_token이 로컬 스토리지에 있다면
     if (localStorage.getItem("access_token")) {
-      if (signinMatch) navigate("/todo");
+      //sign up 페이지일 경우 todo 페이지로 리다이렉트
+      if (signupMatch) navigate("/todo");
     }
   }, []);
-  const API = "https://www.pre-onboarding-selection-task.shop";
-  let emailInputValue = "";
-  let passwordInputValue = "";
-  const onChangeEmail = (e) => (emailInputValue = e.target.value);
-  const onChangePassword = (e) => (passwordInputValue = e.target.value);
-  const postSignup = (e) => {
-    e.preventDefault();
+  let emailInputValue = ""; //email input 입력 값
+  let passwordInputValue = ""; //password input 입력 값
+  const onChangeEmail = (e) => (emailInputValue = e.target.value); //email input change event
+  const onChangePassword = (e) => (passwordInputValue = e.target.value); //password input change event
+  //회원 가입시 동작하는 함수
+  const postSignup = async (e) => {
+    e.preventDefault(); //새로고침 방지
     //email에 '@'포함될 경우 true 반환
     let hasAtSymbol = emailInputValue.includes("@");
     //email : '@' 포함되지 않은 경우, password: 8자 미만일 경우
     if (!hasAtSymbol || passwordInputValue.length < 8) {
       document.getElementById("signup-button").disabled = true;
     } else {
-      axios
-        .post(`${API}/auth/signup`, {
+      try {
+        const response = await axios.post(`${API}/auth/signup`, {
           email: emailInputValue,
           password: passwordInputValue,
-        })
-        .then(function (response) {
-          console.log(response);
-          navigate("/signin");
-        })
-        .catch(function (error) {
-          console.log(error);
-          alert(error.response.data.message);
         });
+        console.log(response);
+        //로그인 페이지로 이동
+        navigate("/signin");
+      } catch (error) {
+        console.log(error);
+        //error message alert창 보여줌
+        alert(error.response.data.message);
+      }
     }
   };
   return (

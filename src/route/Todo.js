@@ -64,21 +64,24 @@ const TodoText = styled.span`
 `;
 
 const Todo = () => {
-  const API = "https://www.pre-onboarding-selection-task.shop";
-  const accessToken = localStorage.getItem("access_token");
+  const API = "https://www.pre-onboarding-selection-task.shop"; //기본 API URL
+  const accessToken = localStorage.getItem("access_token"); //로그인시 발급되는 토큰
   const navigate = useNavigate();
   const todoMatch = useMatch("todo");
+  //화면이 처음 마운트될 때 JWT 토큰 확인
   useEffect(() => {
+    //access_token이 로컬 스토리지에 없다면 
     if (!accessToken) {
+      //todo 페이지일 경우 signin 페이지로 리다이렉트
       if (todoMatch) navigate("/signin");
     }
   }, []);
-
-  const [todos, setTodos] = useState(null);
-  let newTodo = "";
-  const [isEdit, setIsEdit] = useState([]);
+  const [todos, setTodos] = useState(null); //todo list가 저장될 상태 값
+  let newTodo = ""; //추가되는 todo의 text
+  const [isEdit, setIsEdit] = useState([]); //todos의 각 아이템의 수정 버튼 클릭 여부 boolean값 배열
+  //add todo input change event
   const onChangeNewTodo = (e) => (newTodo = e.target.value);
-
+  //todo list 불러오는 함수
   const getTodos = async () => {
     try {
       const response = await axios.get(`${API}/todos`, {
@@ -93,11 +96,12 @@ const Todo = () => {
       console.log(error);
     }
   };
-
+  //추가되는 todo가 있을 때마다 todo list를 불러오는 useEffect
   useEffect(() => {
+    //accessToken이 있는 경우에만 getTodos실행
     if (accessToken) getTodos();
   }, [newTodo]);
-
+  //todo list 추가하는 함수
   const postTodo = async (e) => {
     e.preventDefault();
     try {
@@ -113,20 +117,21 @@ const Todo = () => {
         }
       );
       console.log(response);
+      //todo가 추가되면 todo list를 불러오고 add input 비움
       getTodos();
-      //todo가 추가되면 input 비우기
       document.getElementById("post-input").value = "";
     } catch (error) {
       console.log(error);
     }
   };
-
-  const onClickEdit = (index) => {
+  //클릭된 todo의 isEdit 상태 값 변경
+  const onClickEditStateChange = (index) => {
     const newIsEdit = [...isEdit];
     newIsEdit[index] = !newIsEdit[index];
     setIsEdit(newIsEdit);
   };
-  const putTodosIsCompleted = async (isCheck, id, todo) => {
+  //todo를 수정하는 함수
+  const putTodo = async (isCheck, id, todo) => {
     try {
       const response = await axios.put(
         `${API}/todos/${id}`,
@@ -141,17 +146,21 @@ const Todo = () => {
         }
       );
       console.log(response);
+      //todo가 추가되면 todo list를 불러오고 editInputValue 값 비움
       getTodos();
+      editInputValue = "";
     } catch (error) {
       console.log(error);
     }
   };
-  let isCompleted = false;
-  let editInputValue = "";
+  let editInputValue = ""; //수정하는 todo의 text
+  //edit todo input change event
+  const onChangeEditTodoText = (e) => (editInputValue = e.target.value);
+  //putTodo를 호출하는 함수
   const onChangeTodoEdit = (isCheck, id, todo) => {
-    putTodosIsCompleted(isCheck, id, todo);
+    putTodo(isCheck, id, todo);
   };
-
+  //todo list 삭제하는 함수
   const deleteTodo = async (id) => {
     try {
       await axios.delete(`${API}/todos/${id}`, {
@@ -159,6 +168,7 @@ const Todo = () => {
           Authorization: `Bearer ${accessToken}`,
         },
       });
+      //todo가 삭제되면 todo list 불러옴
       getTodos();
     } catch (error) {
       console.log(error);
@@ -189,7 +199,6 @@ const Todo = () => {
                   checked={item.isCompleted}
                   onChange={(e) => {
                     onChangeTodoEdit(e.target.checked, item.id, item.todo);
-                    isCompleted = e.target.checked;
                   }}
                 />
                 {isEdit[index] ? (
@@ -197,11 +206,9 @@ const Todo = () => {
                     type="text"
                     data-testid="modify-input"
                     defaultValue={item.todo}
-                    onChange={(e) => {
-                      editInputValue = e.target.value;
-                    }}
                     color="#25316d"
-                    width="100%"
+                    width="80%"
+                    onChange={onChangeEditTodoText}
                   />
                 ) : (
                   <TodoText>{item.todo}</TodoText>
@@ -211,18 +218,23 @@ const Todo = () => {
                 <span>
                   <ButtonItem
                     data-testid="submit-button"
-                    onClick={() => {
-                      if (editInputValue === "") onClickEdit(index);
-                      else
-                        onChangeTodoEdit(isCompleted, item.id, editInputValue);
-                    }}
                     color="#9BE8D8"
+                    onClick={() => {
+                      //기존 todo text에서 수정되는 값이 없다면 취소 버튼과 동일하게 동작
+                      if (editInputValue === "") onClickEditStateChange(index);
+                      else
+                        onChangeTodoEdit(
+                          item.isCompleted,
+                          item.id,
+                          editInputValue
+                        );
+                    }}
                   >
                     제출
                   </ButtonItem>
                   <ButtonItem
                     data-testid="cancel-button"
-                    onClick={() => onClickEdit(index)}
+                    onClick={() => onClickEditStateChange(index)}
                   >
                     취소
                   </ButtonItem>
@@ -231,15 +243,15 @@ const Todo = () => {
                 <span>
                   <ButtonItem
                     data-testid="modify-button"
-                    onClick={() => onClickEdit(index)}
                     color="#9BE8D8"
+                    onClick={() => onClickEditStateChange(index)}
                   >
                     수정
                   </ButtonItem>
                   <ButtonItem
                     data-testid="delete-button"
-                    onClick={() => deleteTodo(item.id)}
                     color="#FF6666"
+                    onClick={() => deleteTodo(item.id)}
                   >
                     삭제
                   </ButtonItem>

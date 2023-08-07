@@ -43,35 +43,40 @@ const ButtonItem = styled.button`
 `;
 
 const SignIn = () => {
+  const API = "https://www.pre-onboarding-selection-task.shop"; //기본 API URL
   const navigate = useNavigate();
   const signinMatch = useMatch("signin");
+  //화면이 처음 마운트될 때 JWT 토큰 확인
   useEffect(() => {
+    //access_token이 로컬 스토리지에 있다면
     if (localStorage.getItem("access_token")) {
+      //sign in 페이지일 경우 todo 페이지로 리다이렉트
       if (signinMatch) navigate("/todo");
     }
   }, []);
-  const API = "https://www.pre-onboarding-selection-task.shop";
-  let emailInputValue = "";
-  let passwordInputValue = "";
-  const onChangeEmail = (e) => (emailInputValue = e.target.value);
-  const onChangePassword = (e) => (passwordInputValue = e.target.value);
+  let emailInputValue = ""; //email input 입력 값
+  let passwordInputValue = ""; //password input 입력 값
+  const onChangeEmail = (e) => (emailInputValue = e.target.value); //email input change event
+  const onChangePassword = (e) => (passwordInputValue = e.target.value); //password input change event
+  //로그인시 동작하는 함수
   const postSignin = async (e) => {
-    e.preventDefault();
+    e.preventDefault(); //새로고침 방지
     //email에 '@'포함될 경우 true 할당
     let hasAtSymbol = emailInputValue.includes("@");
     //email : '@' 포함되지 않은 경우, password: 8자 미만일 경우
     if (!hasAtSymbol || passwordInputValue.length < 8) {
       document.getElementById("signin-button").disabled = true;
     } else {
-      console.log(emailInputValue, passwordInputValue);
       try {
         const response = await axios.post(`${API}/auth/signin`, {
           email: emailInputValue,
           password: passwordInputValue,
         });
         console.log(response);
+        //응답받은 JWT 로컬 스토리지에 저장
         const { access_token } = response.data;
         localStorage.setItem("access_token", access_token);
+        //todo 페이지로 이동
         navigate("/todo");
       } catch (error) {
         console.log(error);
