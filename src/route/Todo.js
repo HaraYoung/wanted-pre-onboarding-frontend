@@ -42,6 +42,8 @@ const Todo = () => {
       );
       console.log(response);
       getTodos();
+      //todo가 추가되면 input 비우기
+      document.getElementById("post-input").value = "";
     } catch (error) {
       console.log(error);
     }
@@ -94,7 +96,11 @@ const Todo = () => {
     <div>
       <div>Todo</div>
       <form onSubmit={postTodo}>
-        <input data-testid="new-todo-input" onChange={onChangeNewTodo} />
+        <input
+          data-testid="new-todo-input"
+          id="post-input"
+          onChange={onChangeNewTodo}
+        />
         <button data-testid="new-todo-add-button">추가</button>
       </form>
       <ul>
@@ -110,20 +116,23 @@ const Todo = () => {
                     isCompleted = e.target.checked;
                   }}
                 />
-                <span>{item.todo}</span>
+                {!isEdit[index] && <span>{item.todo}</span>}
               </label>
               {isEdit[index] ? (
                 <span>
                   <input
                     data-testid="modify-input"
                     defaultValue={item.todo}
-                    onChange={(e) => (editInputValue = e.target.value)}
+                    onChange={(e) => {
+                      editInputValue = e.target.value;
+                    }}
                   />
                   <button
                     data-testid="submit-button"
-                    onClick={(e) =>
-                      onChangeTodoEdit(isCompleted, item.id, editInputValue)
-                    }
+                    onClick={() => {
+                      if (editInputValue === "") editInputValue = item.todo;
+                      onChangeTodoEdit(isCompleted, item.id, editInputValue);
+                    }}
                   >
                     제출
                   </button>
