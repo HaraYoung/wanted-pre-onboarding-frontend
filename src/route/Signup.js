@@ -36,6 +36,10 @@ const ButtonItem = styled.button`
   font-weight: bold;
   font-size: 1em;
   cursor: pointer;
+  &:hover {
+    box-shadow: rgba(0, 0, 0, 0.4) 3px 3px 6px 0px inset,
+      #f4d160 -3px -3px 6px 1px inset;
+  }
 `;
 const Signup = () => {
   const navigate = useNavigate();

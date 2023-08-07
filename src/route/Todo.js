@@ -26,6 +26,10 @@ const ButtonItem = styled.button`
     rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
   font-weight: bold;
   cursor: pointer;
+  &:hover {
+    box-shadow: rgba(0, 0, 0, 0.4) 3px 3px 6px 0px inset,
+      ${(props) => props.color} -3px -3px 6px 1px inset;
+  }
 `;
 const TodoList = styled.li`
   background-color: #daf5ff;
@@ -58,7 +62,6 @@ const TodoText = styled.span`
   margin: 0 0.5em;
   font-weight: bold;
 `;
-const BtnContainer = styled.span``;
 
 const Todo = () => {
   const API = "https://www.pre-onboarding-selection-task.shop";
@@ -205,7 +208,7 @@ const Todo = () => {
                 )}
               </TodoItem>
               {isEdit[index] ? (
-                <BtnContainer>
+                <span>
                   <ButtonItem
                     data-testid="submit-button"
                     onClick={() => {
@@ -223,9 +226,9 @@ const Todo = () => {
                   >
                     취소
                   </ButtonItem>
-                </BtnContainer>
+                </span>
               ) : (
-                <BtnContainer>
+                <span>
                   <ButtonItem
                     data-testid="modify-button"
                     onClick={() => onClickEdit(index)}
@@ -240,7 +243,7 @@ const Todo = () => {
                   >
                     삭제
                   </ButtonItem>
-                </BtnContainer>
+                </span>
               )}
             </TodoList>
           ))}
