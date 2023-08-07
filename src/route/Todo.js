@@ -1,6 +1,64 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useMatch } from "react-router-dom";
 import axios from "axios";
+import styled from "styled-components";
+
+const TodoContainer = styled.div`
+  text-align: center;
+  padding: 0.5em;
+`;
+const InputItem = styled.input`
+  background-color: transparent;
+  border: none;
+  border-bottom: 2px solid #f4d160;
+  padding: 0.5em;
+  color: ${(props) => props.color};
+  margin-right: 0.5em;
+  width: ${(props) => props.width};
+`;
+const ButtonItem = styled.button`
+  padding: 0.5em;
+  border: none;
+  border-radius: 4px;
+  background-color: ${(props) => props.color};
+  margin: 0 0.2em;
+  box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px,
+    rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
+  font-weight: bold;
+  cursor: pointer;
+`;
+const TodoList = styled.li`
+  background-color: #daf5ff;
+  width: 90%;
+  color: #25316d;
+  border-radius: 4px;
+  margin: 0.5em 0;
+  padding: 0.3em 0;
+  display: grid;
+  grid-template-columns: 3fr 1fr;
+  gap: 10px;
+`;
+const TodoItem = styled.label`
+  display: flex;
+  align-items: center;
+  padding-left: 1em;
+  input[type="checkbox"] {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    accent-color: #48829e;
+    margin-right: 0.5em;
+  }
+`;
+const TodoText = styled.span`
+  display: inline-block;
+  text-align: left;
+  width: 80%;
+  padding: 0 0.2em;
+  margin: 0 0.5em;
+  font-weight: bold;
+`;
+const BtnContainer = styled.span``;
 
 const Todo = () => {
   const API = "https://www.pre-onboarding-selection-task.shop";
@@ -36,7 +94,7 @@ const Todo = () => {
   useEffect(() => {
     if (accessToken) getTodos();
   }, [newTodo]);
-  
+
   const postTodo = async (e) => {
     e.preventDefault();
     try {
@@ -104,21 +162,25 @@ const Todo = () => {
     }
   };
   return (
-    <div>
-      <div>Todo</div>
+    <TodoContainer>
+      <h1>Todo</h1>
       <form onSubmit={postTodo}>
-        <input
+        <InputItem
           data-testid="new-todo-input"
           id="post-input"
           onChange={onChangeNewTodo}
+          color="#f6f4eb"
+          width="50%"
         />
-        <button data-testid="new-todo-add-button">추가</button>
+        <ButtonItem data-testid="new-todo-add-button" color="#F4D160">
+          추가
+        </ButtonItem>
       </form>
       <ul>
         {todos &&
           todos.map((item, index) => (
-            <li key={item.id}>
-              <label>
+            <TodoList key={item.id}>
+              <TodoItem>
                 <input
                   type="checkbox"
                   checked={item.isCompleted}
@@ -127,54 +189,63 @@ const Todo = () => {
                     isCompleted = e.target.checked;
                   }}
                 />
-                {!isEdit[index] && <span>{item.todo}</span>}
-              </label>
-              {isEdit[index] ? (
-                <span>
-                  <input
+                {isEdit[index] ? (
+                  <InputItem
+                    type="text"
                     data-testid="modify-input"
                     defaultValue={item.todo}
                     onChange={(e) => {
                       editInputValue = e.target.value;
                     }}
+                    color="#25316d"
+                    width="100%"
                   />
-                  <button
+                ) : (
+                  <TodoText>{item.todo}</TodoText>
+                )}
+              </TodoItem>
+              {isEdit[index] ? (
+                <BtnContainer>
+                  <ButtonItem
                     data-testid="submit-button"
                     onClick={() => {
                       if (editInputValue === "") onClickEdit(index);
                       else
                         onChangeTodoEdit(isCompleted, item.id, editInputValue);
                     }}
+                    color="#9BE8D8"
                   >
                     제출
-                  </button>
-                  <button
+                  </ButtonItem>
+                  <ButtonItem
                     data-testid="cancel-button"
                     onClick={() => onClickEdit(index)}
                   >
                     취소
-                  </button>
-                </span>
+                  </ButtonItem>
+                </BtnContainer>
               ) : (
-                <span>
-                  <button
+                <BtnContainer>
+                  <ButtonItem
                     data-testid="modify-button"
                     onClick={() => onClickEdit(index)}
+                    color="#9BE8D8"
                   >
                     수정
-                  </button>
-                  <button
+                  </ButtonItem>
+                  <ButtonItem
                     data-testid="delete-button"
                     onClick={() => deleteTodo(item.id)}
+                    color="#FF6666"
                   >
                     삭제
-                  </button>
-                </span>
+                  </ButtonItem>
+                </BtnContainer>
               )}
-            </li>
+            </TodoList>
           ))}
       </ul>
-    </div>
+    </TodoContainer>
   );
 };
 

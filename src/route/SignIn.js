@@ -1,6 +1,42 @@
 import React, { useEffect } from "react";
 import axios from "axios";
 import { useNavigate, useMatch } from "react-router-dom";
+import styled from "styled-components";
+
+const SignInContainer = styled.div`
+  text-align: center;
+  padding: 0.5em;
+`;
+const SignInForm = styled.form`
+  width: 60%;
+  margin: auto;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1em;
+  padding: 1em;
+`;
+const InputItem = styled.input`
+  background-color: transparent;
+  border: none;
+  border-bottom: 2px solid #f4d160;
+  padding: 0.5em;
+  color: #f6f4eb;
+  margin-right: 0.5em;
+  margin: 0.2em 0;
+`;
+const ButtonItem = styled.button`
+  margin: 1em 0;
+  padding: 0.5em 0.8em;
+  border: none;
+  border-radius: 4px;
+  background-color: #f4d160;
+  margin: 0 0.2em;
+  box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px,
+    rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
+  font-weight: bold;
+  font-size: 1em;
+  cursor: pointer;
+`;
 
 const SignIn = () => {
   const navigate = useNavigate();
@@ -39,25 +75,30 @@ const SignIn = () => {
     }
   };
   return (
-    <div>
-      <div>SignIn</div>
-      <form onSubmit={postSignin}>
-        <input data-testid="email-input" onChange={onChangeEmail} />
-        <input
+    <SignInContainer>
+      <h1>SignIn</h1>
+      <SignInForm onSubmit={postSignin}>
+        <InputItem
+          data-testid="email-input"
+          onChange={onChangeEmail}
+          placeholder="Email"
+        />
+        <InputItem
           data-testid="password-input"
           minLength={8}
           type="password"
           onChange={onChangePassword}
+          placeholder="Password"
         />
-        <button
+        <ButtonItem
           id="signin-button"
           data-testid="signin-button"
           onClick={postSignin}
         >
           로그인
-        </button>
-      </form>
-    </div>
+        </ButtonItem>
+      </SignInForm>
+    </SignInContainer>
   );
 };
 

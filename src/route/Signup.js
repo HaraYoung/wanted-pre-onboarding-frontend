@@ -1,7 +1,42 @@
 import React, { useEffect } from "react";
 import axios from "axios";
 import { useNavigate, useMatch } from "react-router-dom";
+import styled from "styled-components";
 
+const SignUpContainer = styled.div`
+  text-align: center;
+  padding: 0.5em;
+`;
+const SignUpForm = styled.form`
+  width: 60%;
+  margin: auto;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1em;
+  padding: 1em;
+`;
+const InputItem = styled.input`
+  background-color: transparent;
+  border: none;
+  border-bottom: 2px solid #f4d160;
+  padding: 0.5em;
+  color: #f6f4eb;
+  margin-right: 0.5em;
+  margin: 0.2em 0;
+`;
+const ButtonItem = styled.button`
+  margin: 1em 0;
+  padding: 0.5em 0.8em;
+  border: none;
+  border-radius: 4px;
+  background-color: #f4d160;
+  margin: 0 0.2em;
+  box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px,
+    rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
+  font-weight: bold;
+  font-size: 1em;
+  cursor: pointer;
+`;
 const Signup = () => {
   const navigate = useNavigate();
   const signinMatch = useMatch("signup");
@@ -39,24 +74,29 @@ const Signup = () => {
     }
   };
   return (
-    <div>
-      <div>Signup</div>
-      <form onSubmit={postSignup}>
-        <input data-testid="email-input" onChange={onChangeEmail} />
-        <input
+    <SignUpContainer>
+      <h1>Signup</h1>
+      <SignUpForm onSubmit={postSignup}>
+        <InputItem
+          data-testid="email-input"
+          onChange={onChangeEmail}
+          placeholder="Email"
+        />
+        <InputItem
           data-testid="password-input"
           type="password"
           onChange={onChangePassword}
+          placeholder="Password"
         />
-        <button
+        <ButtonItem
           id="signup-button"
           data-testid="signup-button"
           onClick={postSignup}
         >
           회원가입
-        </button>
-      </form>
-    </div>
+        </ButtonItem>
+      </SignUpForm>
+    </SignUpContainer>
   );
 };
 
