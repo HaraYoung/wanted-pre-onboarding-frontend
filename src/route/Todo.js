@@ -1,9 +1,18 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate, useMatch } from "react-router-dom";
 import axios from "axios";
 
 const Todo = () => {
   const API = "https://www.pre-onboarding-selection-task.shop";
   const accessToken = localStorage.getItem("access_token");
+  const navigate = useNavigate();
+  const todoMatch = useMatch("todo");
+  useEffect(() => {
+    if (!accessToken) {
+      if (todoMatch) navigate("/signin");
+    }
+  }, []);
+
   const [todos, setTodos] = useState(null);
   let newTodo = "";
   const [isEdit, setIsEdit] = useState([]);
@@ -23,9 +32,11 @@ const Todo = () => {
       console.log(error);
     }
   };
+
   useEffect(() => {
-    getTodos();
+    if (accessToken) getTodos();
   }, [newTodo]);
+  
   const postTodo = async (e) => {
     e.preventDefault();
     try {
