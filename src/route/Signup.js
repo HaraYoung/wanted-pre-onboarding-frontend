@@ -83,7 +83,7 @@ const Signup = () => {
   };
   return (
     <SignUpContainer>
-      <h1>Signup</h1>
+      <h1>Sign Up</h1>
       <SignUpForm onSubmit={postSignup}>
         <InputItem
           data-testid="email-input"

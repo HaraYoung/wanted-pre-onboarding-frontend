@@ -176,7 +176,7 @@ const Todo = () => {
   };
   return (
     <TodoContainer>
-      <h1>Todo</h1>
+      <h1>Todo List</h1>
       <form onSubmit={postTodo}>
         <InputItem
           data-testid="new-todo-input"

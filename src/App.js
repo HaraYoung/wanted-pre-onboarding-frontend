@@ -35,9 +35,10 @@ const LinkItem = styled(Link)`
 const Content = styled.div`
   background-color: #146c94;
   width: 80%;
-  min-height: 50vh;
+  min-height: 100%;
   border-radius: 10px;
   margin-top: 1em;
+  padding: 1em 0;
   h1 {
     font-size: 1.5em;
     padding: none;
