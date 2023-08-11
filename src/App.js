@@ -3,6 +3,7 @@ import styled from "styled-components";
 import SignUp from "./route/Signup";
 import SignIn from "./route/SignIn";
 import Todo from "./route/Todo";
+import Home from "./route/Home";
 
 const Container = styled.div`
   display: flex;
@@ -55,6 +56,7 @@ function App() {
       </Header>
       <Content>
         <Routes>
+          <Route path="/" element={<Home />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/signin" element={<SignIn />} />
           <Route path="/todo" element={<Todo />} />
