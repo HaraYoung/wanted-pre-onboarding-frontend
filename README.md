@@ -29,7 +29,6 @@ npm start
 ├── 📄 useApi.js
 ├── 📄 App.js
 ├── 📄 index.js
-└── 📄 package.json
 
 ```
 
